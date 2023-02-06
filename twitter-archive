@@ -1,0 +1,35 @@
+#!/bin/bash
+
+set -euo pipefail
+
+if [[ $# -ne 1 ]]; then
+    echo "Usage: ${0##} <username>" >&2
+    echo "Example: ${0##} TwitterDev" >&2
+    exit 1
+fi
+
+if [[ -z ${BEARER_TOKEN:-} ]]; then
+    echo "Environment variable BEARER_TOKEN is not defined." >&2
+    exit 1
+fi
+
+username=$1
+
+if ! command -v twarc2; then
+    echo "twarc2 is not installed. Installing it now..." >&2
+    pip install --user -r requirements.txt
+fi
+
+dir=$(dirname "$(readlink -f "$0")")
+data_dir="$dir/data"
+mkdir -p "$dir/data"
+
+timeline_path="$data_dir/$username.jsonl"
+
+if [[ -f "$timeline_path" ]]; then
+    echo -n "Output file $timeline_path already exists. " >&2
+    echo "Delete it if you want to create a fresh archive." >&2
+    exit 1
+fi
+
+twarc2 --bearer-token "$BEARER_TOKEN" --verbose timeline "$username" "$timeline_path"
