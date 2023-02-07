@@ -8,11 +8,6 @@ if [[ $# -ne 1 ]]; then
     exit 1
 fi
 
-if [[ -z ${BEARER_TOKEN:-} ]]; then
-    echo "Environment variable BEARER_TOKEN is not defined." >&2
-    exit 1
-fi
-
 username=$1
 
 if ! command -v twarc2; then
@@ -21,15 +16,25 @@ if ! command -v twarc2; then
 fi
 
 dir=$(dirname "$(readlink -f "$0")")
-data_dir="$dir/data"
+data_dir="$dir/data/$username"
 mkdir -p "$dir/data"
 
-timeline_path="$data_dir/$username.jsonl"
+timeline_file="$data_dir/timeline.jsonl"
 
-if [[ -f "$timeline_path" ]]; then
-    echo -n "Output file $timeline_path already exists. " >&2
-    echo "Delete it if you want to create a fresh archive." >&2
-    exit 1
+if [[ ! -f "$timeline_file" ]]; then
+    if [[ -z ${BEARER_TOKEN:-} ]]; then
+        echo "Environment variable BEARER_TOKEN is not defined." >&2
+        exit 1
+    fi
+    echo "Archiving timeline..." >&2
+    twarc2 --bearer-token "$BEARER_TOKEN" --verbose timeline "$username" "$timeline_file"
+else
+    echo "Timeline file $timeline_file already exists. Skipping scraping." >&2
 fi
 
-twarc2 --bearer-token "$BEARER_TOKEN" --verbose timeline "$username" "$timeline_path"
+media_dir="$data_dir/media"
+mkdir -p "$media_dir"
+
+./download-media "$timeline_file"
+
+echo "Done" >&2
