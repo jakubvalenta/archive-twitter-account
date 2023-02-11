@@ -1,6 +1,6 @@
-# Twitter Archive
+# Archive Twitter Account
 
-A script to archive a public Twitter profile. It downloads all tweets as one
+A script to archive a public Twitter account. It downloads all tweets as one
 [JSON Lines](https://jsonlines.org/) file and all photos as JPEGs or PNGs.
 
 It uses [twarc](https://twarc-project.readthedocs.io/en/latest/) under the hood.
@@ -27,7 +27,7 @@ create a Project and an App, and get your App's key and tokens.
     # pacman -S python
     ```
 
-2. Install Twitter Archive's dependencies:
+2. Install this project's dependencies:
 
     ```shell
     $ python -r requirements.txt
@@ -43,11 +43,11 @@ create a Project and an App, and get your App's key and tokens.
     $  export BEARER_TOKEN='<your twitter app bearer token>'
     ```
 
-2. Call Twitter Archive with the username of the account you'd like to archive.
-   Example:
+2. Call this project's script with the username of the Twitter account you'd
+   like to archive. Example:
 
      ```shell
-     $ ./twitter-archive TwitterDev
+     $ ./archive-twitter-account TwitterDev
      ```
 
 3. Done. You can now find the downloaded data in the `./data` directory.
