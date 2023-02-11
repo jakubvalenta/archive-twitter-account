@@ -32,9 +32,15 @@ else
     echo "Timeline file $timeline_file already exists. Skipping scraping." >&2
 fi
 
-media_dir="$data_dir/media"
-mkdir -p "$media_dir"
+media_objects_file="$data_dir/media_objects.jsonl"
 
-./download-media "$timeline_file"
+echo "Downloading media objects..." >&2
+./download-media-objects -v "$timeline_file" "$media_objects_file"
+
+media_files_dir="$data_dir/media"
+mkdir -p "$media_files_dir"
+
+echo "Downloading media files..." >&2
+./download-media-files -v "$media_objects_file" "$media_files_dir"
 
 echo "Done" >&2
