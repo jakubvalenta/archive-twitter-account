@@ -61,7 +61,7 @@ def main():
         args.media_objects_file.write(media_object_str + '\n')
         time.sleep(3)
 
-    logger.info('Done')
+    logger.info('Done downloading media objects')
 
 
 if __name__ == '__main__':

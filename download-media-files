@@ -22,10 +22,14 @@ def read_media_objects(f: IO) -> Iterator[MediaObject]:
 
 
 def download_media_file(url: str, path: Path):
+    if path.is_file():
+        logger.info(f'Media file {url} found at {path}. Skipping download.')
+        return
     logger.info(f'Downloading media file {url} to {path}...')
     r = requests.get(url)
     r.raise_for_status()
     path.write_bytes(r.content)
+    time.sleep(3)
 
 
 def main():
@@ -58,9 +62,8 @@ def main():
             u = urlparse(url)
             filename = u.path.split('/')[-1]
             download_media_file(url, args.media_files_dir / filename)
-        time.sleep(3)
 
-    logger.info('Done')
+    logger.info('Done downloading media files')
 
 
 if __name__ == '__main__':

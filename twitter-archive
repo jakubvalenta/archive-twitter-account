@@ -34,8 +34,12 @@ fi
 
 media_objects_file="$data_dir/media_objects.jsonl"
 
-echo "Downloading media objects..." >&2
-./download-media-objects -v "$timeline_file" "$media_objects_file"
+if [[ ! -f "$media_objects_file" ]]; then
+    echo "Downloading media objects..." >&2
+    ./download-media-objects -v "$timeline_file" "$media_objects_file"
+else
+    echo "Media objects file already exists. Skipping scraping." >&2
+fi
 
 media_files_dir="$data_dir/media"
 mkdir -p "$media_files_dir"
